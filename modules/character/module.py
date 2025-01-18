@@ -20,6 +20,10 @@ class Character:
         # Para almacenar la direccion del personaje
         self.current_direction = None
         
+        
+        # Para almacenar la direccion del personaje
+        self.last_direction = None
+        
         self.body_parts = [] # List to keep track of body parts
  
     def move_to_left(self):

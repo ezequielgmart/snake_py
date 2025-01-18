@@ -43,17 +43,59 @@ class Game:
                     sys.exit()
                 elif event.type == pygame.KEYDOWN: 
                     if event.key == pygame.K_LEFT: 
-                        # left
-                        self.snake.current_direction = 1
+                        
+                        if self.snake.current_direction == None:
+                            # If there's no last direction, turn to left
+                            self.snake.current_direction = 1
+                        
+                        elif self.snake.current_direction == 2:
+                            # If last direction was rigth, snake can't turn left
+                            self.snake.current_direction = 2
+                        else:
+                            # left
+                            self.snake.current_direction = 1
+                            
                     elif event.key == pygame.K_RIGHT: 
-                        # Rigth
-                        self.snake.current_direction = 2
+                        
+                        if self.snake.current_direction == None:
+                            # If there's no last direction, turn to rigth
+                            self.snake.current_direction = 2
+                        
+                        elif self.snake.current_direction == 1:
+                            # If last direction was left , snake can't turn left rigth
+                            self.snake.current_direction = 1
+                        else:
+                            # Rigth
+                            self.snake.current_direction = 2
+                        
                     elif event.key == pygame.K_UP: 
-                        # Up
-                        self.snake.current_direction = 3
+                        
+                        if self.snake.current_direction == None:
+                            # If there's no last direction, turn to up
+                            self.snake.current_direction = 3
+                        
+                        elif self.snake.current_direction == 4:
+                            # If last direction was down , snake can't turn up
+                            self.snake.current_direction = 4
+                        else:
+                            # Up
+                            self.snake.current_direction = 3
+                            
+                        
                     elif event.key == pygame.K_DOWN: 
-                        # Down
-                        self.snake.current_direction = 4
+                        
+                        
+                        if self.snake.current_direction == None:
+                            # If there's no last direction, turn to up
+                            self.snake.current_direction = 4
+                        
+                        elif self.snake.current_direction == 3:
+                            # If last direction was down , snake can't turn up
+                            self.snake.current_direction = 3
+                        else:
+                            # Down
+                            self.snake.current_direction = 4
+                            
                     elif event.type == pygame.KEYUP: 
                         if event.key in (pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN): 
                             self.snake.current_direction = None
@@ -66,6 +108,7 @@ class Game:
             if self.snake.current_direction == 1: 
                 self.snake.move_to_left()
             elif self.snake.current_direction == 2: 
+                
                 self.snake.move_to_right()
             elif self.snake.current_direction == 3: 
                 self.snake.move_to_up()
@@ -124,6 +167,8 @@ class Game:
         # Actualizar la pantalla
         pygame.display.flip()
 
+
+    # detects collision with the borders of the display
     def display_border_coalition(self):    
         
         if self.snake.position_y >= self.display_height or self.snake.position_y < 0:
@@ -132,6 +177,7 @@ class Game:
         if self.snake.position_x >= self.display_width or self.snake.position_x < 0:    
             self.snake.border_crash()
 
+    # snake's eat logic
     def eat(self, food): 
         # Check if the character collides with the food 
         character_has_eat = self.character_collision_with_food(food) 
@@ -145,27 +191,34 @@ class Game:
             if self.snake.body_parts: 
                 last_part = self.snake.body_parts[-1] 
             else: last_part = self.snake 
+            
             # Add new body part one step behind the last part to prevent immediate self-collision 
             if self.snake.current_direction == 1: 
+                
+                
                 # moving left 
-                new_x = last_part.position_x + 20 
+                new_x = last_part.position_x + 5 
                 new_y = last_part.position_y 
+                
             elif self.snake.current_direction == 2: 
+                
                 # moving right 
-                new_x = last_part.position_x - 20 
+                new_x = last_part.position_x - 5 
                 new_y = last_part.position_y 
                 
             elif self.snake.current_direction == 3: 
                 # moving up 
                 new_x = last_part.position_x 
-                new_y = last_part.position_y + 20 
+                new_y = last_part.position_y + 5 
+                
             elif self.snake.current_direction == 4: 
                 # moving down 
                 new_x = last_part.position_x 
-                new_y = last_part.position_y - 20 
+                new_y = last_part.position_y - 5 
                 new_body_part = SnakeBodyPart(new_x, new_y) 
                 self.snake.body_parts.append(new_body_part)                
-            
+    
+    # colission with the food        
     def character_collision_with_food(self, food): 
         character_rect = pygame.Rect(self.snake.position_x, self.snake.position_y, *self.snake.size) 
         food_rect = pygame.Rect(food.position_x, food.position_y, *food.size) 
