@@ -1,0 +1,18 @@
+1/17/25 
+
+Completed: 
+
+Movement 
+Eat 
+Border's coallision
+
+
+NOTES: 
+
+Bug when u eat, detectes a self coallision
+
+to do
+
+-Fix Bug
+-Score
+-Game over screen
