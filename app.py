@@ -1,37 +1,40 @@
 import pygame
 import sys
+import os 
 
-from modules.character.module import Character,SnakeBodyPart
-from modules.objects.module import GameObject, Food
+from modules.character.module import Character,SnakeBodyPart, NPC
+from modules.objects.module import Food
+from modules.config import settings
 
-class Game:
+class Game():
+    
     def __init__(self):
+        
         super().__init__()
+        
         # Inicializar pygame
         pygame.init()
-
-        self.display_width = 900
-        self.display_height = 600
-
-        # Configurar la pantalla
+            
+        # configuraciones de pygame     
+        self.display_width = settings.DISPLAY['width']
+        self.display_height = settings.DISPLAY['heigth']
         self.display = pygame.display.set_mode((self.display_width, self.display_height))
-        pygame.display.set_caption('Mi Primer Juego')
-
-        # Inicializar el reloj para controlar la velocidad de fotogramas 
+        pygame.display.set_caption('Snake Game')
         self.clock = pygame.time.Clock()
 
-        # Lista de personajes
+        # entorno del videojuego
         self.list_of_characters = []
-
+        
         self.snake = Character()
+        
+        self.npc = NPC(settings.COLORS['RED'])
+        
         self.list_of_characters.append(self.snake)
+        self.list_of_characters.append(self.npc)
         
         self.list_of_objects = []
-        
         self.there_is_food = False
-        
         self.counter = 0
-        
         
 
     def run(self):
@@ -43,101 +46,79 @@ class Game:
                     sys.exit()
                 elif event.type == pygame.KEYDOWN: 
                     if event.key == pygame.K_LEFT: 
-                        
-                        if self.snake.current_direction == None:
-                            # If there's no last direction, turn to left
-                            self.snake.current_direction = 1
-                        
-                        elif self.snake.current_direction == 2:
-                            # If last direction was rigth, snake can't turn left
-                            self.snake.current_direction = 2
-                        else:
-                            # left
-                            self.snake.current_direction = 1
+                        direction = "LEFT"
+                        self.snake.change_direction(direction)
                             
                     elif event.key == pygame.K_RIGHT: 
-                        
-                        if self.snake.current_direction == None:
-                            # If there's no last direction, turn to rigth
-                            self.snake.current_direction = 2
-                        
-                        elif self.snake.current_direction == 1:
-                            # If last direction was left , snake can't turn left rigth
-                            self.snake.current_direction = 1
-                        else:
-                            # Rigth
-                            self.snake.current_direction = 2
+                        direction = "RIGHT"
+                        self.snake.change_direction(direction)
                         
                     elif event.key == pygame.K_UP: 
-                        
-                        if self.snake.current_direction == None:
-                            # If there's no last direction, turn to up
-                            self.snake.current_direction = 3
-                        
-                        elif self.snake.current_direction == 4:
-                            # If last direction was down , snake can't turn up
-                            self.snake.current_direction = 4
-                        else:
-                            # Up
-                            self.snake.current_direction = 3
-                            
+                        direction = "UP"
+                        self.snake.change_direction(direction)
                         
                     elif event.key == pygame.K_DOWN: 
-                        
-                        
-                        if self.snake.current_direction == None:
-                            # If there's no last direction, turn to up
-                            self.snake.current_direction = 4
-                        
-                        elif self.snake.current_direction == 3:
-                            # If last direction was down , snake can't turn up
-                            self.snake.current_direction = 3
-                        else:
-                            # Down
-                            self.snake.current_direction = 4
+                        direction = "DOWN"
+                        self.snake.change_direction(direction)
                             
                     elif event.type == pygame.KEYUP: 
                         if event.key in (pygame.K_LEFT, pygame.K_RIGHT, pygame.K_UP, pygame.K_DOWN): 
-                            self.snake.current_direction = None
+                            
+                            self.snake.change_direction(None)
            
                     elif event.key == pygame.K_SPACE:
                         self.snake.alive = False
                         print("Exit pressed")
                 
             # Mover el personaje en la dirección actual 
-            if self.snake.current_direction == 1: 
-                self.snake.move_to_left()
-            elif self.snake.current_direction == 2: 
+            self.snake.move_character_towards_direction()
+            
+
+            
+            # observar que ambos no choquen los border
+            for character in self.list_of_characters:
+                if self.display_border_coalition(character):
+                    character.alive = False
+                    print("Choco con border! ")
+                    exit()
                 
-                self.snake.move_to_right()
-            elif self.snake.current_direction == 3: 
-                self.snake.move_to_up()
-            elif self.snake.current_direction == 4: 
-                self.snake.move_to_down()
-            
-            self.display_border_coalition()
-            
-            # Check for collision with itself 
-            if self.detect_self_collision(): 
-                print("Self-collision detected!") 
-                self.snake.alive = False
+
             
             # Spawn food if there is none
-            if not self.there_is_food:        
+            if not self.there_is_food:   
+                 
                 food = self.spawn_food()
                 self.there_is_food = True
                 self.list_of_objects.append(food)
+                
    
             # Check if the character eats the food
-            self.eat(food)
+            for character in self.list_of_characters:
+                
+                if character.eat(food):
+                    
+                    self.list_of_objects.remove(food)
+                    
+                    food = self.spawn_food()
+                    self.there_is_food = True
+                    self.list_of_objects.append(food)
             
+            self.npc.auto_move(food)
+            
+            # self.greedy_move(food, self.snake)
+            
+            # # Check for collision with itself 
+            # if self.detect_self_collision(): 
+            #     print("Self-collision detected!") 
+            #     self.snake.alive = False
+                
             # Actualizar pantalla
             self.update_display(self.list_of_characters,self.list_of_objects)
 
             # Controlar la velocidad de fotogramas
-            self.clock.tick(60)
+            self.clock.tick(settings.FRAMERATE)
 
-
+            
     def draw_character(self, character):
         # Draw the main character
         self.display.fill(character.color, (character.position_x, character.position_y, *character.size))
@@ -150,13 +131,16 @@ class Game:
     def draw_object(self, object):
         self.display.fill(object.color, (object.position_x, object.position_y, *object.size))
         
+        
     def spawn_food(self):
-        food = Food(self.display_width,self.display_height)
+        secure_area = [self.display_width,self.display_height]
+        print(secure_area)
+        food = Food(secure_area[0],secure_area[1])
         return food
 
     def update_display(self, list_of_characters, list_of_objects):
         # Rellenar la pantalla con un color
-        self.display.fill((0, 0, 0))
+        self.display.fill(settings.COLORS['BLACK'])
 
         for character in list_of_characters:
             self.draw_character(character)
@@ -169,61 +153,15 @@ class Game:
 
 
     # detects collision with the borders of the display
-    def display_border_coalition(self):    
+    def display_border_coalition(self, character):    
         
-        if self.snake.position_y >= self.display_height or self.snake.position_y < 0:
-            self.snake.border_crash()
-            
-        if self.snake.position_x >= self.display_width or self.snake.position_x < 0:    
-            self.snake.border_crash()
+        if character.position_y >= self.display_height or character.position_y < 0:
+            return True
+        elif character.position_x >= self.display_width or character.position_x < 0:    
+            return True
+        else:
+            return False
 
-    # snake's eat logic
-    def eat(self, food): 
-        # Check if the character collides with the food 
-        character_has_eat = self.character_collision_with_food(food) 
-        
-        if character_has_eat: 
-            # Remove the food and reset the flag 
-            self.list_of_objects.remove(food) 
-            self.there_is_food = False 
-            
-            # Add new body part to the snake at the current position of the last body part 
-            if self.snake.body_parts: 
-                last_part = self.snake.body_parts[-1] 
-            else: last_part = self.snake 
-            
-            # Add new body part one step behind the last part to prevent immediate self-collision 
-            if self.snake.current_direction == 1: 
-                
-                
-                # moving left 
-                new_x = last_part.position_x + 5 
-                new_y = last_part.position_y 
-                
-            elif self.snake.current_direction == 2: 
-                
-                # moving right 
-                new_x = last_part.position_x - 5 
-                new_y = last_part.position_y 
-                
-            elif self.snake.current_direction == 3: 
-                # moving up 
-                new_x = last_part.position_x 
-                new_y = last_part.position_y + 5 
-                
-            elif self.snake.current_direction == 4: 
-                # moving down 
-                new_x = last_part.position_x 
-                new_y = last_part.position_y - 5 
-                new_body_part = SnakeBodyPart(new_x, new_y) 
-                self.snake.body_parts.append(new_body_part)                
-    
-    # colission with the food        
-    def character_collision_with_food(self, food): 
-        character_rect = pygame.Rect(self.snake.position_x, self.snake.position_y, *self.snake.size) 
-        food_rect = pygame.Rect(food.position_x, food.position_y, *food.size) 
-        return character_rect.colliderect(food_rect)
-    
     def detect_self_collision(self): 
         # Check for collision between the head and the body parts 
         head_rect = pygame.Rect(self.snake.position_x, self.snake.position_y, *self.snake.size) 
