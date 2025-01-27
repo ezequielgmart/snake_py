@@ -1,0 +1,13 @@
+{
+    "instances": [
+        {
+            "id": 1,
+            "name": "food",
+            "sprite_files": [
+                "cookie.png"
+            ],
+            "width": 10,
+            "height": 10
+        }
+    ]
+}

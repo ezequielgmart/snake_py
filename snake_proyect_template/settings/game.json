@@ -1,0 +1,8 @@
+{
+    "game_settings": {
+        "name": "Snake Test Project",
+        "framerate": 30,
+        "screen_width": 800,
+        "screen_height": 600
+    }
+}

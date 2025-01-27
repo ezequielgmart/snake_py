@@ -1,0 +1,28 @@
+{
+    "levels": [
+        {
+            "level_id": 0,
+            "rooms": [
+                {
+                    "room_id": 1
+                }
+            ]
+        },
+        {
+            "level_id": 1,
+            "rooms": [
+                {
+                    "room_id": 2
+                }
+            ]
+        },
+        {
+            "level_id": 99,
+            "rooms": [
+                {
+                    "room_id": 99
+                }
+            ]
+        }
+    ]
+}
