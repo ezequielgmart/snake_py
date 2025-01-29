@@ -25,6 +25,11 @@ class GameModule:
         # Ajustes del juego por defecto y otros datos
         self.config_file = self.get_data_from_json_file('.//settings//game.json')
 
+    # 
+    def get_objects_config(self):
+        data = self.get_data_from_json_file(self.objects_file)
+        return data
+    
     def get_players_config(self):
         data = self.get_data_from_json_file(self.players_file)
         return data

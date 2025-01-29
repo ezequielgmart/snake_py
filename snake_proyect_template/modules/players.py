@@ -28,18 +28,38 @@ class PlayerModule(pygame.sprite.Sprite):
 
     # Método para actualizar la posición del sprite
     def update(self):  
+        
         keys = pygame.key.get_pressed()  # Obtiene el estado de todas las teclas del teclado
+        
         if keys[pygame.K_LEFT]:  # Si la tecla izquierda está presionada
-            self.rect.x -= self.speed  # Mueve el sprite a la izquierda
+            self.move_left()
         if keys[pygame.K_RIGHT]:  # Si la tecla derecha está presionada
-            self.rect.x += self.speed  # Mueve el sprite a la derecha
+            self.move_right()
+            
         if keys[pygame.K_UP]:  # Si la tecla arriba está presionada
-            self.rect.y -= self.speed  # Mueve el sprite hacia arriba
+            self.move_up()
+            
         if keys[pygame.K_DOWN]:  # Si la tecla abajo está presionada
-            self.rect.y += self.speed  # Mueve el sprite hacia abajo
+            
+            self.move_down()
         
-        
+        # Condicion de victoria
         if self.live <= 0:
             return False
         
         return True
+    
+    def move_left(self):
+        self.rect.x -= self.speed  # Mueve el sprite a la izquierda
+    
+    
+    def move_right(self):
+        self.rect.x += self.speed  # Mueve el sprite a la derecha
+    
+    
+    def move_up(self):
+        self.rect.y -= self.speed  # Mueve el sprite hacia arriba
+    
+    
+    def move_down(self):
+        self.rect.y += self.speed  # Mueve el sprite hacia abajo
