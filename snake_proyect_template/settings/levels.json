@@ -1,26 +1,47 @@
 {
-    "levels": [
+    "instances": [
         {
             "level_id": 0,
-            "rooms": [
-                {
-                    "room_id": 1
-                }
+            "level_type": "screen",
+            "start_level": "yes",
+            "order": 0,
+            "background": ".//assets//images//start_game.jpg",
+            "players": {},
+            "objects": [
+                {}
+            ]
+        },
+        {
+            "level_id": 2,
+            "level_type": "screen",
+            "start_level": "no",
+            "order": 1,
+            "background": ".//assets//images//final_game.jpg",
+            "players": {},
+            "objects": [
+                {}
             ]
         },
         {
             "level_id": 1,
-            "rooms": [
-                {
-                    "room_id": 2
+            "level_type": "0",
+            "start_level": "no",
+            "order": 1,
+            "background": ".//assets//images//grass.png",
+            "players": {
+                "player_id": 1,
+                "position": {
+                    "x": 100,
+                    "y": 100
                 }
-            ]
-        },
-        {
-            "level_id": 99,
-            "rooms": [
+            },
+            "objects": [
                 {
-                    "room_id": 99
+                    "object_id": 1,
+                    "position": {
+                        "x": 500,
+                        "y": 500
+                    }
                 }
             ]
         }

@@ -7,6 +7,6 @@
             "y": 100
         },
         "speed": 2,
-        "live": 1
+        "direction": 0
     }
 ]

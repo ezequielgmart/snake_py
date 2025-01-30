@@ -25,6 +25,9 @@ class PlayerModule(pygame.sprite.Sprite):
         self.speed = config.get("speed", 5)  
         
         self.live = config["live"]
+        
+        self.direction = config["direction"]
+        
 
     # Método para actualizar la posición del sprite
     def update(self):  
