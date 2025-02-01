@@ -24,10 +24,9 @@ class PlayerModule(pygame.sprite.Sprite):
         # Establece la velocidad del sprite, con un valor predeterminado de 5 si no se especifica en la configuración
         self.speed = config.get("speed", 5)  
         
-        self.live = config["live"]
-        
         self.direction = config["direction"]
         
+        self.live = config["live"]
 
     # Método para actualizar la posición del sprite
     def update(self):  

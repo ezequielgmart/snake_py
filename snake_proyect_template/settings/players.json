@@ -2,11 +2,12 @@
     {
         "player_id": 1,
         "sprites": ".//assets//sprites//snake.png",
+        "speed": 2,
         "position": {
             "x": 100,
             "y": 100
         },
-        "speed": 2,
-        "direction": 0
+        "direction": 0,
+        "live": 1
     }
 ]

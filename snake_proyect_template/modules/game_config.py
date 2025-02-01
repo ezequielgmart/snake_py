@@ -18,7 +18,7 @@ class GameModule:
     def __init__(self):
         # Guardar todas las configuraciones que esten en los archivos json 
         self.levels_file = './/settings//levels.json'
-        self.rooms_file = './/settings//rooms.json'
+        # self.rooms_file = './/settings//rooms.json'
         self.objects_file = './/settings//objects.json'
         self.players_file = './/settings//players.json'
         
@@ -35,7 +35,7 @@ class GameModule:
         return data
     
     def get_levels_config(self):
-        data = self.get_data_from_json_file(self.rooms_file)
+        data = self.get_data_from_json_file(self.levels_file)
         return data
             
     def get_data_from_json_file(self,dir):    

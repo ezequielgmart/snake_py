@@ -6,10 +6,8 @@
             "start_level": "yes",
             "order": 0,
             "background": ".//assets//images//start_game.jpg",
-            "players": {},
-            "objects": [
-                {}
-            ]
+            "players": [],
+            "objects": []
         },
         {
             "level_id": 2,
@@ -17,10 +15,8 @@
             "start_level": "no",
             "order": 1,
             "background": ".//assets//images//final_game.jpg",
-            "players": {},
-            "objects": [
-                {}
-            ]
+            "players": [],
+            "objects": []
         },
         {
             "level_id": 1,
@@ -28,13 +24,16 @@
             "start_level": "no",
             "order": 1,
             "background": ".//assets//images//grass.png",
-            "players": {
-                "player_id": 1,
-                "position": {
-                    "x": 100,
-                    "y": 100
+            "players": [
+                {
+                    "player_id": 1,
+                    "position": {
+                        "x": 100,
+                        "y": 100
+                    },
+                    "hidden": 0
                 }
-            },
+            ],
             "objects": [
                 {
                     "object_id": 1,

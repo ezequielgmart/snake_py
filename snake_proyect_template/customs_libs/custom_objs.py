@@ -1,6 +1,6 @@
-from modules.objects import ObjectsGame
+from modules.game_objects import ObjectsGame
 
-class GameObjectsCustomized(ObjectsGame):
+class ObjectsGameCustomized(ObjectsGame):
     
     # Método constructor que recibe un diccionario de configuración
     def __init__(self, config):  

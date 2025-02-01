@@ -14,18 +14,16 @@ import pygame  # Importa la biblioteca Pygame
 import sys  # Importa la biblioteca sys para manejar la salida del programa
 
 # Dependencias
-from modules.game import GameModule  # Importa la clase GameModule desde el módulo game
+from modules.game_config import GameModule
 from modules.levels import LevelModule  # Importa la clase LevelModule desde el módulo levels
 
 
-class GameApp(GameModule):  # Define la clase GameApp que hereda de GameModule
+class GameApp(GameModule):  # Define la clase GameApp que hereda de config
     
     def __init__(self):
         
-        
-            super().__init__()  # Llama al constructor de la clase base (GameModule)
+            super().__init__()  # Llama al constructor de la clase base (config)
             
-
             self.game_config = self.config_file['game_settings']  # Carga la configuración del juego desde el archivo de configuración
             
             # Configurar la pantalla
@@ -36,7 +34,8 @@ class GameApp(GameModule):  # Define la clase GameApp que hereda de GameModule
 
             # Colores
             self.white = (255, 255, 255)  # Define el color blanco en formato RGB
-
+        
+        
             # Carga la configuración de los niveles desde el archivo JSON
             self.levels_config = self.get_levels_config()  
             
@@ -48,7 +47,7 @@ class GameApp(GameModule):  # Define la clase GameApp que hereda de GameModule
             self.objects_config = self.get_objects_config()
             
             # Obtiene el ID del nivel inicial
-            self.start_level_id = self.levels_config["start_level"]  
+            self.start_level_id = 0
             
             # Inicializa current_level_no con el ID del nivel inicial
             self.current_level_no = self.start_level_id  
@@ -61,19 +60,27 @@ class GameApp(GameModule):  # Define la clase GameApp que hereda de GameModule
             Asignar el diccionario resultante a `self.levels`.
 
             """
-            self.levels = {config["room_id"]: LevelModule(config, self.players_config, self.objects_config) for config in self.levels_config["instances"]}  
+            self.levels = {config["level_id"]: LevelModule(config) for config in self.levels_config["instances"]}  
             
             # Establece el nivel actual
             self.current_level = self.levels[self.current_level_no]  
             
+
             # Crea un objeto Clock para controlar el tiempo del juego
             self.clock = pygame.time.Clock()  
+    
+    
+    # def update_current_level(self):
+    #     self.levels[self.current_level_no].load_level(self.current_level_no,self.players_config,self.objects_config)
         
      
     def run(self): 
-        clock = pygame.time.Clock()  # Crea un objeto Clock para controlar el tiempo del juego
 
-        while True:  # Bucle principal del juego
+        # self.levels[self.current_level_no].load_level(self.current_level_no,self.players_config,self.objects_config)
+        
+        running = True
+            
+        while running:  # Bucle principal del juego
             for event in pygame.event.get():  # Itera sobre los eventos de Pygame
                 if event.type == pygame.QUIT:  # Si se cierra la ventana del juego
                     pygame.quit()  # Cierra Pygame
@@ -82,8 +89,8 @@ class GameApp(GameModule):  # Define la clase GameApp que hereda de GameModule
                     if self.current_level_no == 0:  # Si el nivel actual es el nivel inicial
                         self.current_level_no = 1  # Cambia al siguiente nivel
                         self.current_level = self.levels[self.current_level_no]  # Establece el nuevo nivel actual
-                    
-            self.current_level.update()  # Actualiza el estado del nivel actual
+               
+            self.current_level.update(self.players_config,self.objects_config)  # Actualiza el estado del nivel actual
 
             # Si la condicion de perdida es True en este nivel, entonces:     
             if self.current_level.game_over:
@@ -94,7 +101,7 @@ class GameApp(GameModule):  # Define la clase GameApp que hereda de GameModule
             self.current_level.draw(self.screen)  # Dibuja el nivel actual en la pantalla
 
             pygame.display.flip()  # Actualiza la pantalla
-            clock.tick(60)  # Controla la velocidad del juego a 60 fotogramas por segundo
+            self.clock.tick(60)  # Controla la velocidad del juego a 60 fotogramas por segundo
             
             if self.current_level_no == 0:  # Si el nivel actual es el nivel inicial
                 pass  # No hace nada
